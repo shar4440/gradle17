@@ -1,43 +1,43 @@
-pipeline{
+pipeline {
   agent any
 
-  tools{
-    gradle 'Gradle'
-    jdk 'JDK'
+  tools {
+    gradle 'Gradle'   // Make sure this matches the name configured in Jenkins Global Tools
+    jdk 'JDK'         // Ensure this JDK version exists in Jenkins Global Tools
   }
 
-  stages{
-    stage('check'){
-      steps{
-        git branch:'master',url:'https://github.com/shar4440/gradle17.git'
+  stages {
+    stage('Checkout') {
+      steps {
+        git branch: 'master', url: 'https://github.com/shar4440/gradle17.git'
       }
     }
 
-    stage('build'){
-      steps{
-        sh 'gradle build'
+    stage('Build') {
+      steps {
+        sh './gradlew clean build' // Prefer wrapper if available, else use 'gradle build'
       }
     }
 
-    stage('test'){
-      steps{
-        sh 'gradle test'
+    stage('Test') {
+      steps {
+        sh './gradlew test'
       }
     }
 
-    stage('run'){
-    steps{
-      sh 'gradle run'
+    stage('Run') {
+      steps {
+        sh './gradlew run'
+      }
     }
   }
-}
 
-post{
-  success{
-    echo 'yes'
+  post {
+    success {
+      echo '✅ Build succeeded!'
+    }
+    failure {
+      echo '❌ Build failed.'
+    }
   }
-  failure{
-    echo 'noooooo'
-  }
-}
 }
